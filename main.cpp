@@ -3,6 +3,10 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include "tree.hh"
+#ifdef DEBUG
+    #include "tree_util.hh"
+#endif
 
 #define ALGO_DEPTH_FIRST        "DFS"
 #define ALGO_BREADTH_FIRST      "BFS"
