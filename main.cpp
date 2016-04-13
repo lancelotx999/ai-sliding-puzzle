@@ -17,6 +17,117 @@
 
 using namespace std;
 
+class NodeMap
+{
+    private:
+        int x;
+        int y;
+        int **puzzle;
+        int columns;
+        int rows;
+    public:
+        NodeMap(int _x, int _y, int **_puzzle, int _columns, int _rows):
+            x(_x), y(_y), columns(_columns), rows(_rows)
+        {
+            puzzle = _puzzle;
+        }
+
+        ~NodeMap()
+        {
+            for (int i(0); i < rows; i++)
+            {
+                delete [] puzzle[i];
+            }
+            delete [] puzzle;
+        }
+
+        static void copy(int **puzzle_from, int **puzzle_to, int _columns, int _rows)
+        {
+            for (int i(0); i < _rows; i++)
+            {
+                for (int ii(0); ii < _columns; ii++)
+                {
+                    puzzle_to[i][ii] = puzzle_from[i][ii];
+                }
+            }
+        }
+
+#ifdef DEBUG
+        void print() 
+        {
+            cerr << x << " " << y << endl;
+            for (int i(0); i < rows; i++)
+            {
+                for (int ii(0); ii < columns; ii++)
+                {
+                    cerr << puzzle[i][ii] << " ";
+                }
+                cerr << endl;
+            }
+        }
+#endif
+
+        NodeMap *up()
+        {
+            int **new_puzzle = new int*[rows];
+            for (int i(0); i < rows; i++)
+            {
+                new_puzzle[i] = new int[columns];
+            }
+            copy(puzzle, new_puzzle, columns, rows);
+            int swap = puzzle[x-1][y];
+            new_puzzle[x-1][y] = new_puzzle[x][y];
+            new_puzzle[x][y] = swap;
+            NodeMap *node = new NodeMap(x - 1, y, new_puzzle, columns, rows);
+            return node;
+        }
+
+        NodeMap *left()
+        {
+            int **new_puzzle = new int*[rows];
+            for (int i(0); i < rows; i++)
+            {
+                new_puzzle[i] = new int[columns];
+            }
+            copy(puzzle, new_puzzle, columns, rows);
+            int swap = puzzle[x][y-1];
+            new_puzzle[x][y-1] = new_puzzle[x][y];
+            new_puzzle[x][y] = swap;
+            NodeMap *node = new NodeMap(x, y - 1, new_puzzle, columns, rows);
+            return node;
+        }
+
+        NodeMap *down()
+        {
+            int **new_puzzle = new int*[rows];
+            for (int i(0); i < rows; i++)
+            {
+                new_puzzle[i] = new int[columns];
+            }
+            copy(puzzle, new_puzzle, columns, rows);
+            int swap = puzzle[x+1][y];
+            new_puzzle[x+1][y] = new_puzzle[x][y];
+            new_puzzle[x][y] = swap;
+            NodeMap *node = new NodeMap(x + 1, y, new_puzzle, columns, rows);
+            return node;
+        }
+
+        NodeMap *right()
+        {
+            int **new_puzzle = new int*[rows];
+            for (int i(0); i < rows; i++)
+            {
+                new_puzzle[i] = new int[columns];
+            }
+            copy(puzzle, new_puzzle, columns, rows);
+            int swap = puzzle[x][y+1];
+            new_puzzle[x][y+1] = new_puzzle[x][y];
+            new_puzzle[x][y] = swap;
+            NodeMap *node = new NodeMap(x, y + 1, new_puzzle, columns, rows);
+            return node;
+        }
+};
+
 
 bool verify_file(string file)
 {
@@ -44,6 +155,7 @@ int solve(string file, string algorithm)
         stringstream size_stream;
         int columns(0);
         int rows(0);
+        int x, y;
 
         getline(puzzle, line);
         replace(line.begin(), line.end(), 'x', ' ');
@@ -72,6 +184,11 @@ int solve(string file, string algorithm)
             for (int ii(0); ii < columns; ii++)
             {
                 puzzle_stream >> puzzle_map[i][ii];
+                if (puzzle_map[i][ii] == 0)
+                {
+                    x = i;
+                    y = ii;
+                }
 #ifdef DEBUG
                 cerr << puzzle_map[i][ii] << " ";
 #endif
@@ -101,6 +218,33 @@ int solve(string file, string algorithm)
             cerr << endl;
 #endif
         }
+
+        NodeMap *start = new NodeMap(x, y, puzzle_map, columns, rows);
+        NodeMap *next = start->up();
+        NodeMap *next_left = next->left();
+        NodeMap *next_right = next->right();
+        NodeMap *next_down = next_right->down();
+        NodeMap *finish = new NodeMap(x, y, solution_map, columns, rows);
+#ifdef DEBUG
+        cerr << "Start" << endl;
+        start->print();
+        cerr << "Start moves up" << endl;
+        next->print();
+        cerr << "Next moves left" << endl;
+        next_left->print();
+        cerr << "Next moves right" << endl;
+        next_right->print();
+        cerr << "Right moves down" << endl;
+        next_down->print();
+        cerr << "Finish" << endl;
+        finish->print();
+#endif
+        delete start;
+        delete next;
+        delete next_left;
+        delete next_right;
+        delete next_down;
+        delete finish;
 
         return EXIT_SUCCESS;
     }
