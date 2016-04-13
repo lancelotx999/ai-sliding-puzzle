@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <ostream>
 #include <string>
 #include <algorithm>
 #include "tree.hh"
@@ -52,20 +53,16 @@ class NodeMap
             }
         }
 
-#ifdef DEBUG
-        void print() 
-        {
-            cerr << x << " " << y << endl;
-            for (int i(0); i < rows; i++)
-            {
-                for (int ii(0); ii < columns; ii++)
-                {
-                    cerr << puzzle[i][ii] << " ";
-                }
-                cerr << endl;
-            }
-        }
-#endif
+        int getX() const { return x; }
+        int getY() const { return y; }
+        int getColumns() const { return columns; }
+        int getRows() const { return rows; }
+        int **getPuzzle() const { return puzzle; }
+
+        bool can_up() { return x > 0; }
+        bool can_left() { return y > 0; }
+        bool can_down() { return x < rows - 1; }
+        bool can_right() { return y < columns - 1; }
 
         NodeMap *up()
         {
@@ -128,6 +125,32 @@ class NodeMap
         }
 };
 
+ostream& operator<<(std::ostream &os, const NodeMap &s)
+{
+    for (int i(0); i < s.getRows(); i++)
+    {
+        for (int ii(0); ii < s.getColumns(); ii++)
+        {
+            os << s.getPuzzle()[i][ii] << " ";
+        }
+        os << endl;
+    }
+    return os;
+}
+
+ostream& operator<<(std::ostream &os, const NodeMap *s)
+{
+    for (int i(0); i < s->getRows(); i++)
+    {
+        for (int ii(0); ii < s->getColumns(); ii++)
+        {
+            os << s->getPuzzle()[i][ii] << " ";
+        }
+        os << endl;
+    }
+    return os;
+}
+
 
 bool verify_file(string file)
 {
@@ -156,6 +179,7 @@ int solve(string file, string algorithm)
         int columns(0);
         int rows(0);
         int x, y;
+        int X, Y;
 
         getline(puzzle, line);
         replace(line.begin(), line.end(), 'x', ' ');
@@ -210,6 +234,11 @@ int solve(string file, string algorithm)
             for (int ii(0); ii < columns; ii++)
             {
                 solution_stream >> solution_map[i][ii];
+                if (solution_map[i][ii] == 0)
+                {
+                    X = i;
+                    Y = ii;
+                }
 #ifdef DEBUG
                 cerr << solution_map[i][ii] << " ";
 #endif
@@ -220,30 +249,17 @@ int solve(string file, string algorithm)
         }
 
         NodeMap *start = new NodeMap(x, y, puzzle_map, columns, rows);
-        NodeMap *next = start->up();
-        NodeMap *next_left = next->left();
-        NodeMap *next_right = next->right();
-        NodeMap *next_down = next_right->down();
-        NodeMap *finish = new NodeMap(x, y, solution_map, columns, rows);
+        NodeMap *finish = new NodeMap(X, Y, solution_map, columns, rows);
+
+        tree<NodeMap*> puzzle_tree;
+        tree<NodeMap*>::iterator tree_node, root_node;
+        tree_node = puzzle_tree.begin();
+        root_node = puzzle_tree.insert(tree_node, start);
 #ifdef DEBUG
-        cerr << "Start" << endl;
-        start->print();
-        cerr << "Start moves up" << endl;
-        next->print();
-        cerr << "Next moves left" << endl;
-        next_left->print();
-        cerr << "Next moves right" << endl;
-        next_right->print();
-        cerr << "Right moves down" << endl;
-        next_down->print();
-        cerr << "Finish" << endl;
-        finish->print();
+        kptree::print_tree_bracketed(puzzle_tree, cout);
 #endif
+
         delete start;
-        delete next;
-        delete next_left;
-        delete next_right;
-        delete next_down;
         delete finish;
 
         return EXIT_SUCCESS;
