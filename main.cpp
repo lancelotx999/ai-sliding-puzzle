@@ -4,6 +4,7 @@
 #include <ostream>
 #include <string>
 #include <algorithm>
+#include <vector>
 #include "tree.hh"
 #ifdef DEBUG
     #include "tree_util.hh"
@@ -26,9 +27,16 @@ class NodeMap
         int **puzzle;
         int columns;
         int rows;
+        bool start;
     public:
         NodeMap(int _x, int _y, int **_puzzle, int _columns, int _rows):
-            x(_x), y(_y), columns(_columns), rows(_rows)
+            x(_x), y(_y), columns(_columns), rows(_rows), start(false)
+        {
+            puzzle = _puzzle;
+        }
+
+        NodeMap(int _x, int _y, int **_puzzle, int _columns, int _rows, bool _start):
+            x(_x), y(_y), columns(_columns), rows(_rows), start(_start)
         {
             puzzle = _puzzle;
         }
@@ -63,6 +71,7 @@ class NodeMap
         bool can_left() { return y > 0; }
         bool can_down() { return x < rows - 1; }
         bool can_right() { return y < columns - 1; }
+        bool is_start() { return start; }
 
         NodeMap *up()
         {
@@ -123,6 +132,34 @@ class NodeMap
             NodeMap *node = new NodeMap(x, y + 1, new_puzzle, columns, rows);
             return node;
         }
+
+        inline bool operator==(const NodeMap& compare_node)
+        {
+            int **compare_puzzle = compare_node.getPuzzle();
+            for (int i(0); i < rows; i++)
+            {
+                for (int ii(0); ii < columns; ii++)
+                {
+                    if (compare_puzzle[i][ii] != puzzle[i][ii])
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        inline bool operator==(const NodeMap* compare_node)
+        {
+            int **compare_puzzle = compare_node->getPuzzle();
+            for (int i(0); i < rows; i++)
+            {
+                for (int ii(0); ii < columns; ii++)
+                {
+                    if (compare_puzzle[i][ii] != puzzle[i][ii])
+                        return false;
+                }
+            }
+            return true;
+        }
 };
 
 ostream& operator<<(std::ostream &os, const NodeMap &s)
@@ -151,6 +188,112 @@ ostream& operator<<(std::ostream &os, const NodeMap *s)
     return os;
 }
 
+tree<NodeMap*>::iterator get_parent(tree<NodeMap*> *tr, tree<NodeMap*>::iterator *node)
+{
+    return tr->parent(*node);
+}
+
+vector<tree<NodeMap*>::iterator> get_parents(tree<NodeMap*> *tr, tree<NodeMap*>::iterator *node)
+{
+    vector<tree<NodeMap*>::iterator> _parents;
+    if (! (**node)->is_start())
+    {
+        tree<NodeMap*>::iterator parent;
+        parent = tr->parent(*node);
+        _parents.push_back(parent);
+        while (parent != tr->begin())
+        {
+            parent = get_parent(tr, &parent);
+            _parents.push_back(parent);
+        }
+    }
+    return _parents;
+}
+
+bool is_parent(NodeMap *s, vector<tree<NodeMap*>::iterator> p)
+{
+    for (tree<NodeMap*>::iterator parent: p)
+    {
+        if (*parent == s)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+class BFS
+{
+    private:
+        bool solved;
+    public:
+        BFS():
+            solved(false)
+    {
+    }
+        void solve(NodeMap *current, NodeMap *finish, tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
+        {
+#ifdef DEBUG
+            cerr << "Current:" << endl;
+            cerr << current << endl;
+#endif
+            if (solved) return;
+            if (current == finish)
+            {
+                cout << "solved" << endl;
+                solved = true;
+                return;
+            }
+            if (current->can_up())
+            {
+                vector<tree<NodeMap*>::iterator> _parents = get_parents(puzzle_tree, node);
+                tree<NodeMap*>::iterator child;
+                NodeMap *next = current->up();
+#ifdef DEBUG
+                cerr << "Next:" << endl;
+                cerr << next << endl;
+#endif
+                if (! is_parent(next, _parents))
+                {
+                    child = puzzle_tree->append_child(*node, next);
+                    solve(next, finish, puzzle_tree, &child);
+                }
+            }
+            if (current->can_left())
+            {
+                vector<tree<NodeMap*>::iterator> _parents = get_parents(puzzle_tree, node);
+                tree<NodeMap*>::iterator child;
+                NodeMap *next = current->left();
+                if (! is_parent(next, _parents))
+                {
+                    child = puzzle_tree->append_child(*node, next);
+                    solve(next, finish, puzzle_tree, &child);
+                }
+            }
+            if (current->can_down())
+            {
+                vector<tree<NodeMap*>::iterator> _parents = get_parents(puzzle_tree, node);
+                tree<NodeMap*>::iterator child;
+                NodeMap *next = current->down();
+                if (! is_parent(next, _parents))
+                {
+                    child = puzzle_tree->append_child(*node, next);
+                    solve(next, finish, puzzle_tree, &child);
+                }
+            }
+            if (current->can_right())
+            {
+                vector<tree<NodeMap*>::iterator> _parents = get_parents(puzzle_tree, node);
+                tree<NodeMap*>::iterator child;
+                NodeMap *next = current->right();
+                if (! is_parent(next, _parents))
+                {
+                    child = puzzle_tree->append_child(*node, next);
+                    solve(next, finish, puzzle_tree, &child);
+                }
+            }
+        }
+};
 
 bool verify_file(string file)
 {
@@ -248,15 +391,19 @@ int solve(string file, string algorithm)
 #endif
         }
 
-        NodeMap *start = new NodeMap(x, y, puzzle_map, columns, rows);
+        NodeMap *start = new NodeMap(x, y, puzzle_map, columns, rows, true);
         NodeMap *finish = new NodeMap(X, Y, solution_map, columns, rows);
 
         tree<NodeMap*> puzzle_tree;
         tree<NodeMap*>::iterator tree_node, root_node;
         tree_node = puzzle_tree.begin();
         root_node = puzzle_tree.insert(tree_node, start);
+
+
+        BFS *bfs = new BFS();
+        bfs->solve(start, finish, &puzzle_tree, &root_node);
 #ifdef DEBUG
-        kptree::print_tree_bracketed(puzzle_tree, cout);
+        kptree::print_tree_bracketed(puzzle_tree, cerr);
 #endif
 
         delete start;
