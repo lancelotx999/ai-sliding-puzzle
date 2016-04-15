@@ -6,13 +6,13 @@ CFLAGS = -std=c++0x -ggdb
 #TARGET is the name of your main file
 TARGET = main
 #OBJECTS = $(TARGET).o library1.o library.o, all the header files here
-OBJECTS = $(TARGET).o
+OBJECTS = $(TARGET).o nodemap.o
 #EXTRA Command line arguments
 #Syntax: make EXTRA="arg1 arg2"
 EXTRA = -D DEBUG
 
 #Do not modify
-$(TARGET) : $(OBJECTS)
+$(TARGET) : clean $(OBJECTS)
 		$(CC) $(CFLAGS) $(EXTRA) $(OBJECTS) -o $(TARGET).bin
 
 #%.c or %.cpp
