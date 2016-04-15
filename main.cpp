@@ -12,6 +12,7 @@
 #include "ai.h"
 #include "dfs.h"
 #include "bfs.h"
+#include "gbs.h"
 #include "as.h"
 
 #ifdef DEBUG
@@ -137,6 +138,8 @@ int solve(string file, string algorithm)
             ai = new DFS(finish, &root_node, &solution_node);
         else if (algorithm == "BFS")
             ai = new BFS(finish, &root_node, &solution_node);
+        else if (algorithm == "GBS")
+            ai = new GBS(finish, &root_node, &solution_node);
         else if (algorithm == "AS")
             ai = new AS(finish, &root_node, &solution_node);
 
