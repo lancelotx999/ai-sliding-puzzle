@@ -11,6 +11,7 @@ class NodeMap
         int x;
         int y;
         int **puzzle;
+        int heuristic;
         int columns;
         int rows;
         bool start;
@@ -29,6 +30,7 @@ class NodeMap
         int getColumns() const;
         int getRows() const;
         int **getPuzzle() const;
+        int getHeuristic() const;
         std::string getDirection() const;
 
         bool can_up();
@@ -36,6 +38,8 @@ class NodeMap
         bool can_down();
         bool can_right();
         bool is_start();
+
+        void setHeuristic(int _heuristic);
 
         NodeMap *up();
 

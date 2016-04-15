@@ -12,6 +12,7 @@
 #include "ai.h"
 #include "dfs.h"
 #include "bfs.h"
+#include "as.h"
 
 #ifdef DEBUG
     #include "tree_util.hh"
@@ -126,16 +127,18 @@ int solve(string file, string algorithm)
         NodeMap *finish = new NodeMap(X, Y, solution_map, columns, rows);
 
         tree<NodeMap*> puzzle_tree;
-        tree<NodeMap*>::iterator tree_node, root_node, sollution_node;
+        tree<NodeMap*>::iterator tree_node, root_node, solution_node;
         tree_node = puzzle_tree.begin();
         root_node = puzzle_tree.insert(tree_node, start);
 
         AI *ai = NULL;
 
         if (algorithm == "DFS")
-            ai = new DFS(finish, &root_node, &sollution_node);
+            ai = new DFS(finish, &root_node, &solution_node);
         else if (algorithm == "BFS")
-            ai = new BFS(finish, &root_node, &sollution_node);
+            ai = new BFS(finish, &root_node, &solution_node);
+        else if (algorithm == "AS")
+            ai = new AS(finish, &root_node, &solution_node);
 
         if (ai != NULL)
         {

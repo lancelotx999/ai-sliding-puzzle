@@ -31,6 +31,9 @@ void AI::print(std::ostream &output_stream)
     while (move != moves.end())
     {
         output_stream << (*move)->getDirection() << " ";
+#ifdef DEBUG
+        output_stream << (*move) << " ";
+#endif
         move++;
     }
     output_stream << std::endl;

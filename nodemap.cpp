@@ -37,6 +37,7 @@ int NodeMap::getY() const { return y; }
 int NodeMap::getColumns() const { return columns; }
 int NodeMap::getRows() const { return rows; }
 int **NodeMap::getPuzzle() const { return puzzle; }
+int NodeMap::getHeuristic() const { return heuristic; }
 std::string NodeMap::getDirection() const { return direction; }
 
 bool NodeMap::can_up() { return x > 0; }
@@ -44,6 +45,9 @@ bool NodeMap::can_left() { return y > 0; }
 bool NodeMap::can_down() { return x < rows - 1; }
 bool NodeMap::can_right() { return y < columns - 1; }
 bool NodeMap::is_start() { return start; }
+
+void NodeMap::setHeuristic(int _heuristic) { heuristic = _heuristic; }
+
 
 NodeMap *NodeMap::up()
 {
