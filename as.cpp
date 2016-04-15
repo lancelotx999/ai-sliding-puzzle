@@ -1,5 +1,4 @@
 #include "as.h"
-#include <iostream>
 
 AS::AS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node):
     AI()
@@ -33,7 +32,6 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
 void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node, int cost)
 {
     NodeMap *current = *(*node);
-    std::cout << current << std::endl;
     if (solved) return;
     if (*current == *finish)
     {

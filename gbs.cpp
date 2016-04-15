@@ -35,8 +35,6 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         return;
     }
 
-    std::priority_queue<tree<NodeMap*>::iterator, std::vector<tree<NodeMap*>::iterator>, CompareNode> span;
-
     if (current->can_up())
     {
         if (solved) return;
@@ -119,5 +117,6 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
     }
 
     tree<NodeMap*>::iterator next = span.top();
+    span.pop();
     solve(puzzle_tree, &next);
 }
