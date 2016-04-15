@@ -1,6 +1,4 @@
 #include "nodemap.h"
-#include <ostream>
-#include <iostream>
 
 NodeMap::NodeMap(int _x, int _y, int **_puzzle, int _columns, int _rows):
     x(_x), y(_y), columns(_columns), rows(_rows), start(false)

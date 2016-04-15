@@ -6,7 +6,7 @@ CFLAGS = -std=c++0x -ggdb
 #TARGET is the name of your main file
 TARGET = main
 #OBJECTS = $(TARGET).o library1.o library.o, all the header files here
-OBJECTS = $(TARGET).o nodemap.o
+OBJECTS = $(TARGET).o nodemap.o shared.o dfs.o
 #EXTRA Command line arguments
 #Syntax: make EXTRA="arg1 arg2"
 ?EXTRA =
