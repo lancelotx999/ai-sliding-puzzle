@@ -49,5 +49,5 @@ NodeMap *like(tree<NodeMap*>::iterator &root_node, NodeMap *compare)
 
 bool CompareNode::operator()(const tree<NodeMap*>::iterator &lhs, const tree<NodeMap*>::iterator &rhs)
 {
-    return (*lhs)->getHeuristic() < (*rhs)->getHeuristic();
+    return (*lhs)->getHeuristic() > (*rhs)->getHeuristic();
 }

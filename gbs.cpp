@@ -51,6 +51,7 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            setHeuristic(next);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -70,6 +71,7 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            setHeuristic(next);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -89,6 +91,7 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            setHeuristic(next);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -108,6 +111,7 @@ void GBS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            setHeuristic(next);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
