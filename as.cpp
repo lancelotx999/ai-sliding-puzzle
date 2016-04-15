@@ -1,4 +1,5 @@
 #include "as.h"
+#include <iostream>
 
 AS::AS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node):
     AI()
@@ -8,7 +9,7 @@ AS::AS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::i
     solution_node = _solution_node;
 }
 
-void AS::setHeuristic(NodeMap *node)
+void AS::setHeuristic(NodeMap *node, int cost)
 {
     int **finish_puzzle = finish->getPuzzle();
     int **node_puzzle = node->getPuzzle();
@@ -21,12 +22,18 @@ void AS::setHeuristic(NodeMap *node)
                 differences++;
         }
     }
-    node->setHeuristic(differences);
+    node->setHeuristic(differences + cost);
 }
 
 void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
 {
+    solve(puzzle_tree, node, 0);
+}
+
+void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node, int cost)
+{
     NodeMap *current = *(*node);
+    std::cout << current << std::endl;
     if (solved) return;
     if (*current == *finish)
     {
@@ -34,8 +41,6 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         solution_node = node;
         return;
     }
-
-    std::priority_queue<tree<NodeMap*>::iterator, std::vector<tree<NodeMap*>::iterator>, CompareNode> span;
 
     if (current->can_up())
     {
@@ -51,6 +56,8 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            cost++;
+            setHeuristic(next, cost);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -70,6 +77,8 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            cost++;
+            setHeuristic(next, cost);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -89,6 +98,8 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            cost++;
+            setHeuristic(next, cost);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -108,6 +119,8 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         }
         if (! is_parent(next, _parents))
         {
+            cost++;
+            setHeuristic(next, cost);
             child = puzzle_tree->append_child(*node, next);
             expansions++;
             span.push(child);
@@ -115,5 +128,6 @@ void AS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
     }
 
     tree<NodeMap*>::iterator next = span.top();
+    span.pop();
     solve(puzzle_tree, &next);
 }
