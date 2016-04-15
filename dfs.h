@@ -3,8 +3,6 @@
 
 #include "ai.h"
 #include "shared.h"
-#include <vector>
-#include <deque>
 
 class DFS: public AI
 {

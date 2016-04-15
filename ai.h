@@ -4,6 +4,8 @@
 #include "tree.hh"
 #include "nodemap.h"
 #include <ostream>
+#include <vector>
+#include <deque>
 
 class AI
 {
