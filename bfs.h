@@ -1,5 +1,5 @@
-#ifndef DFS_H
-#define DFS_H
+#ifndef BFS_H
+#define BFS_H
 
 #include "tree.hh"
 #include "nodemap.h"
@@ -8,7 +8,7 @@
 #include <vector>
 #include <deque>
 
-class DFS
+class BFS
 {
     private:
         bool solved;
@@ -17,7 +17,7 @@ class DFS
         tree<NodeMap*>::iterator *root_node;
         tree<NodeMap*>::iterator *solution_node;
     public:
-        DFS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node);
+        BFS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node);
 
         void print(std::ostream &output_stream);
 

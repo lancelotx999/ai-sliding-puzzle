@@ -1,15 +1,15 @@
-#include "dfs.h"
+#include "bfs.h"
+#include <iostream>
 
-DFS::DFS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node):
+BFS::BFS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node):
     solved(false), expansions(0)
-
 {
     finish = _finish;
     root_node = _root_node;
     solution_node = _solution_node;
 }
 
-void DFS::print(std::ostream &output_stream)
+void BFS::print(std::ostream &output_stream)
 {
     if (! solved) return;
     std::deque<NodeMap*> moves;
@@ -41,7 +41,7 @@ void DFS::print(std::ostream &output_stream)
     output_stream << std::endl;
 }
 
-void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
+void BFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
 {
     NodeMap *current = *(*node);
     if (solved) return;
@@ -51,6 +51,9 @@ void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         solution_node = node;
         return;
     }
+
+    std::deque<tree<NodeMap*>::iterator*> span;
+
     if (current->can_up())
     {
         if (solved) return;
@@ -67,7 +70,7 @@ void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         {
             child = puzzle_tree->append_child(*node, next);
             expansions++;
-            solve(puzzle_tree, &child);
+            span.push_back(&child);
         }
     }
     if (current->can_left())
@@ -86,7 +89,7 @@ void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         {
             child = puzzle_tree->append_child(*node, next);
             expansions++;
-            solve(puzzle_tree, &child);
+            span.push_back(&child);
         }
     }
     if (current->can_down())
@@ -105,7 +108,7 @@ void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         {
             child = puzzle_tree->append_child(*node, next);
             expansions++;
-            solve(puzzle_tree, &child);
+            span.push_back(&child);
         }
     }
     if (current->can_right())
@@ -124,7 +127,14 @@ void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)
         {
             child = puzzle_tree->append_child(*node, next);
             expansions++;
-            solve(puzzle_tree, &child);
+            span.push_back(&child);
         }
+    }
+
+    std::deque<tree<NodeMap*>::iterator*>::iterator child = span.begin();
+    while (child != span.end())
+    {
+        solve(puzzle_tree, *child);
+        child++;
     }
 }

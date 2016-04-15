@@ -10,6 +10,7 @@
 #include "nodemap.h"
 #include "shared.h"
 #include "dfs.h"
+#include "bfs.h"
 
 #ifdef DEBUG
     #include "tree_util.hh"
@@ -128,9 +129,18 @@ int solve(string file, string algorithm)
         tree_node = puzzle_tree.begin();
         root_node = puzzle_tree.insert(tree_node, start);
 
-        DFS *dfs = new DFS(&root_node, &sollution_node);
-        dfs->solve(start, finish, &puzzle_tree, &root_node);
-        dfs->print(cout);
+        if (algorithm == "DFS")
+        {
+            DFS *dfs = new DFS(finish, &root_node, &sollution_node);
+            dfs->solve(&puzzle_tree, &root_node);
+            dfs->print(cout);
+        }
+        else if (algorithm == "BFS")
+        {
+            BFS *bfs = new BFS(finish, &root_node, &sollution_node);
+            bfs->solve(&puzzle_tree, &root_node);
+            bfs->print(cout);
+        }
         
 #ifdef DEBUG
         //kptree::print_tree_bracketed(puzzle_tree, cerr);
