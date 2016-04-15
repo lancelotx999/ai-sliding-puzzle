@@ -40,6 +40,7 @@ class NodeMap
         bool is_start();
 
         void setHeuristic(int _heuristic);
+        void setDirection(std::string _direction);
 
         NodeMap *up();
 

@@ -47,11 +47,11 @@ bool NodeMap::can_right() { return y < columns - 1; }
 bool NodeMap::is_start() { return start; }
 
 void NodeMap::setHeuristic(int _heuristic) { heuristic = _heuristic; }
+void NodeMap::setDirection(std::string _direction) { direction = _direction; }
 
 
 NodeMap *NodeMap::up()
 {
-    direction = "Up;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -62,12 +62,12 @@ NodeMap *NodeMap::up()
     new_puzzle[x-1][y] = new_puzzle[x][y];
     new_puzzle[x][y] = swap;
     NodeMap *node = new NodeMap(x - 1, y, new_puzzle, columns, rows);
+    node->setDirection("Up;");
     return node;
 }
 
 NodeMap *NodeMap::left()
 {
-    direction = "Left;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -78,12 +78,12 @@ NodeMap *NodeMap::left()
     new_puzzle[x][y-1] = new_puzzle[x][y];
     new_puzzle[x][y] = swap;
     NodeMap *node = new NodeMap(x, y - 1, new_puzzle, columns, rows);
+    node->setDirection("Left;");
     return node;
 }
 
 NodeMap *NodeMap::down()
 {
-    direction = "Down;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -94,12 +94,12 @@ NodeMap *NodeMap::down()
     new_puzzle[x+1][y] = new_puzzle[x][y];
     new_puzzle[x][y] = swap;
     NodeMap *node = new NodeMap(x + 1, y, new_puzzle, columns, rows);
+    node->setDirection("Down;");
     return node;
 }
 
 NodeMap *NodeMap::right()
 {
-    direction = "Right;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -110,6 +110,7 @@ NodeMap *NodeMap::right()
     new_puzzle[x][y+1] = new_puzzle[x][y];
     new_puzzle[x][y] = swap;
     NodeMap *node = new NodeMap(x, y + 1, new_puzzle, columns, rows);
+    node->setDirection("Right;");
     return node;
 }
 
