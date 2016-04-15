@@ -1,44 +1,12 @@
 #include "dfs.h"
 
 DFS::DFS(NodeMap *_finish, tree<NodeMap*>::iterator *_root_node, tree<NodeMap*>::iterator *_solution_node):
-    solved(false), expansions(0)
+    AI()
 
 {
     finish = _finish;
     root_node = _root_node;
     solution_node = _solution_node;
-}
-
-void DFS::print(std::ostream &output_stream)
-{
-    if (! solved) return;
-    std::deque<NodeMap*> moves;
-    moves.push_front(*(*solution_node));
-
-    tree<NodeMap*>::pre_order_iterator DIT(*solution_node);
-    tree_node_<NodeMap*> solution_node = DIT.get_node();
-    tree_node_<NodeMap*> *solution_node_parent = solution_node.parent;
-
-    moves.push_front(solution_node_parent->data);
-
-    int steps(1);
-
-    while(! solution_node_parent->data->is_start())
-    {
-        solution_node_parent= solution_node_parent->parent;
-        moves.push_front(solution_node_parent->data);
-        steps++;
-    }
-
-    std::deque<NodeMap*>::iterator move = moves.begin();
-
-    output_stream << expansions << " " << steps << " ";
-    while (move != moves.end())
-    {
-        output_stream << (*move)->getDirection() << " ";
-        move++;
-    }
-    output_stream << std::endl;
 }
 
 void DFS::solve(tree<NodeMap*> *puzzle_tree, tree<NodeMap*>::iterator *node)

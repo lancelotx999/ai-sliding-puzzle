@@ -9,6 +9,7 @@
 #include "tree.hh"
 #include "nodemap.h"
 #include "shared.h"
+#include "ai.h"
 #include "dfs.h"
 #include "bfs.h"
 
@@ -129,17 +130,17 @@ int solve(string file, string algorithm)
         tree_node = puzzle_tree.begin();
         root_node = puzzle_tree.insert(tree_node, start);
 
+        AI *ai = NULL;
+
         if (algorithm == "DFS")
-        {
-            DFS *dfs = new DFS(finish, &root_node, &sollution_node);
-            dfs->solve(&puzzle_tree, &root_node);
-            dfs->print(cout);
-        }
+            ai = new DFS(finish, &root_node, &sollution_node);
         else if (algorithm == "BFS")
+            ai = new BFS(finish, &root_node, &sollution_node);
+
+        if (ai != NULL)
         {
-            BFS *bfs = new BFS(finish, &root_node, &sollution_node);
-            bfs->solve(&puzzle_tree, &root_node);
-            bfs->print(cout);
+            ai->solve(&puzzle_tree, &root_node);
+            ai->print(cout);
         }
         
 #ifdef DEBUG
