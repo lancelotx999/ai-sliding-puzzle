@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <deque>
 #include "tree.hh"
 #include "nodemap.h"
 #ifdef DEBUG
@@ -82,21 +83,38 @@ class DFS
         root_node = _root_node;
         solution_node = _solution_node;
     }
-        void print()
+        void print(ostream &output_stream)
         {
             if (! solved) return;
+            deque<NodeMap*> moves;
+            moves.push_front(*(*solution_node));
+
             tree<NodeMap*>::pre_order_iterator DIT(*solution_node);
             tree_node_<NodeMap*> solution_node = DIT.get_node();
             tree_node_<NodeMap*> *solution_node_parent = solution_node.parent;
+
+            moves.push_front(solution_node_parent->data);
+
             int steps(1);
+
             while(! solution_node_parent->data->is_start())
             {
                 solution_node_parent= solution_node_parent->parent;
-                cerr << *solution_node_parent->data << endl;
+                moves.push_front(solution_node_parent->data);
                 steps++;
             }
-            cout << "Required steps: " << steps << endl;
+
+            deque<NodeMap*>::iterator move = moves.begin();
+
+            output_stream << steps << " ";
+            while (move != moves.end())
+            {
+                output_stream << (*move)->getDirection() << " ";
+                move++;
+            }
+            output_stream << endl;
         }
+
         void solve(
                 NodeMap *current,
                 NodeMap *finish,
@@ -291,7 +309,7 @@ int solve(string file, string algorithm)
 
         DFS *dfs = new DFS(&root_node, &sollution_node);
         dfs->solve(start, finish, &puzzle_tree, &root_node);
-        dfs->print();
+        dfs->print(cout);
         
 #ifdef DEBUG
         //kptree::print_tree_bracketed(puzzle_tree, cerr);

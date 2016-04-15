@@ -9,7 +9,7 @@ TARGET = main
 OBJECTS = $(TARGET).o nodemap.o
 #EXTRA Command line arguments
 #Syntax: make EXTRA="arg1 arg2"
-EXTRA = -D DEBUG
+?EXTRA =
 
 #Do not modify
 $(TARGET) : clean $(OBJECTS)

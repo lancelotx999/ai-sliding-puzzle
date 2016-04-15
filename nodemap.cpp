@@ -39,6 +39,7 @@ int NodeMap::getY() const { return y; }
 int NodeMap::getColumns() const { return columns; }
 int NodeMap::getRows() const { return rows; }
 int **NodeMap::getPuzzle() const { return puzzle; }
+std::string NodeMap::getDirection() const { return direction; }
 
 bool NodeMap::can_up() { return x > 0; }
 bool NodeMap::can_left() { return y > 0; }
@@ -48,6 +49,7 @@ bool NodeMap::is_start() { return start; }
 
 NodeMap *NodeMap::up()
 {
+    direction = "Up;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -63,6 +65,7 @@ NodeMap *NodeMap::up()
 
 NodeMap *NodeMap::left()
 {
+    direction = "Left;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -78,6 +81,7 @@ NodeMap *NodeMap::left()
 
 NodeMap *NodeMap::down()
 {
+    direction = "Down;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {
@@ -93,6 +97,7 @@ NodeMap *NodeMap::down()
 
 NodeMap *NodeMap::right()
 {
+    direction = "Right;";
     int **new_puzzle = new int*[rows];
     for (int i(0); i < rows; i++)
     {

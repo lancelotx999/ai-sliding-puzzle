@@ -2,6 +2,7 @@
 #define NODEMAP_H
 
 #include <ostream>
+#include <string>
 
 class NodeMap;
 class NodeMap
@@ -13,6 +14,7 @@ class NodeMap
         int columns;
         int rows;
         bool start;
+        std::string direction;
     public:
         NodeMap(int _x, int _y, int **_puzzle, int _columns, int _rows);
 
@@ -27,6 +29,7 @@ class NodeMap
         int getColumns() const;
         int getRows() const;
         int **getPuzzle() const;
+        std::string getDirection() const;
 
         bool can_up();
         bool can_left();
